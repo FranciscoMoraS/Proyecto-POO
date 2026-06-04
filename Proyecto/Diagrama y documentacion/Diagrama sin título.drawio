@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Página-1" id="gEKF-afSuJBGgSwqPxjD">
-    <mxGraphModel dx="2494" dy="2099" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1547" dy="1735" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -206,20 +206,20 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="lASjGSZTduiQM0AYBGc9-1" parent="1" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedHeader=1;" value="Controladora" vertex="1">
-          <mxGeometry height="514" width="700" x="110" y="-730" as="geometry" />
+          <mxGeometry height="524" width="700" x="110" y="-730" as="geometry" />
         </mxCell>
         <mxCell id="lASjGSZTduiQM0AYBGc9-2" parent="lASjGSZTduiQM0AYBGc9-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fixedHeader=1;" value="" vertex="1">
-          <mxGeometry height="60" width="700" y="30" as="geometry" />
+          <mxGeometry height="70" width="700" y="30" as="geometry" />
         </mxCell>
         <mxCell id="lASjGSZTduiQM0AYBGc9-3" parent="lASjGSZTduiQM0AYBGc9-2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;" value="" vertex="1">
-          <mxGeometry height="60" width="700" as="geometry">
-            <mxRectangle height="60" width="700" as="alternateBounds" />
+          <mxGeometry height="70" width="700" as="geometry">
+            <mxRectangle height="70" width="700" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
         <mxCell id="lASjGSZTduiQM0AYBGc9-4" parent="lASjGSZTduiQM0AYBGc9-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fixedHeader=1;" value="" vertex="1">
-          <mxGeometry height="424" width="700" y="90" as="geometry" />
+          <mxGeometry height="424" width="700" y="100" as="geometry" />
         </mxCell>
-        <mxCell id="lASjGSZTduiQM0AYBGc9-5" parent="lASjGSZTduiQM0AYBGc9-4" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;" value="" vertex="1">
+        <mxCell id="lASjGSZTduiQM0AYBGc9-5" parent="lASjGSZTduiQM0AYBGc9-4" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;" value="+Controladora ()&lt;div&gt;+obtenerListaPersonas() : List&amp;lt;Persona&amp;gt;&lt;/div&gt;&lt;div&gt;+crearPersona(ID,Nombre,Telefono,Email)&amp;nbsp;&lt;/div&gt;&lt;div&gt;+modificarPersona(Nombre, Telefono, Email)&lt;/div&gt;&lt;div&gt;+borrarPersona(ID) : void&lt;/div&gt;&lt;div&gt;+consultarPersona(ID) : Persona&lt;/div&gt;&lt;div&gt;+obtenerListaItems() : List&amp;lt;Item&amp;gt;&lt;/div&gt;&lt;div&gt;+crearItem(Nombre,Codigo, Descripcion, Tipo, Categoria)&lt;/div&gt;&lt;div&gt;+modificarItem(Nombre, Descripcion, Tipo, Categoria)&lt;/div&gt;&lt;div&gt;+&lt;/div&gt;" vertex="1">
           <mxGeometry height="424" width="700" as="geometry">
             <mxRectangle height="424" width="700" as="alternateBounds" />
           </mxGeometry>
@@ -231,6 +231,24 @@
         </mxCell>
         <mxCell id="lASjGSZTduiQM0AYBGc9-8" edge="1" parent="1" source="lASjGSZTduiQM0AYBGc9-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="4vyR8nRWui6VSePEdvpd-1">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lASjGSZTduiQM0AYBGc9-9" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Items :&amp;nbsp; List&amp;lt;Item&amp;gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="920" y="-60" as="geometry" />
+        </mxCell>
+        <mxCell id="lASjGSZTduiQM0AYBGc9-10" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="0..*" vertex="1">
+          <mxGeometry height="30" width="60" x="910" y="-30" as="geometry" />
+        </mxCell>
+        <mxCell id="lASjGSZTduiQM0AYBGc9-11" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Prestamos : List&amp;lt;Prestamo&amp;gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="340" y="-10" as="geometry" />
+        </mxCell>
+        <mxCell id="lASjGSZTduiQM0AYBGc9-12" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="0..*" vertex="1">
+          <mxGeometry height="30" width="60" x="320" y="-50" as="geometry" />
+        </mxCell>
+        <mxCell id="lASjGSZTduiQM0AYBGc9-13" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Personas : List&amp;lt;Persona&amp;gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="-300" y="-100" as="geometry" />
+        </mxCell>
+        <mxCell id="lASjGSZTduiQM0AYBGc9-14" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="0..*" vertex="1">
+          <mxGeometry height="30" width="80" x="-320" y="-50" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
