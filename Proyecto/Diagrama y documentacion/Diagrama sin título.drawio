@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Página-1" id="gEKF-afSuJBGgSwqPxjD">
-    <mxGraphModel dx="3016" dy="2373" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1587" dy="1767" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -37,7 +37,7 @@
         <mxCell id="4vyR8nRWui6VSePEdvpd-9" parent="4vyR8nRWui6VSePEdvpd-6" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fixedHeader=1;" value="" vertex="1">
           <mxGeometry height="190" width="380" y="170" as="geometry" />
         </mxCell>
-        <mxCell id="4vyR8nRWui6VSePEdvpd-10" parent="4vyR8nRWui6VSePEdvpd-9" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;" value="+Persona (ID, Nombre, Telefono, Email)&lt;div&gt;+getNombre() : String&lt;/div&gt;&lt;div&gt;+setNombre(string) : void&lt;/div&gt;&lt;div&gt;+getTelefono() : String&lt;/div&gt;&lt;div&gt;+setTelefono( String) : void&lt;/div&gt;&lt;div&gt;+getEmail():String&lt;/div&gt;&lt;div&gt;+setEmail(String) : void&lt;/div&gt;&lt;div&gt;+getPrestamos() : List&amp;lt;Prestamo&amp;gt;&lt;/div&gt;&lt;div&gt;+borrarPrestamo(Prestamo) :void&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="4vyR8nRWui6VSePEdvpd-10" parent="4vyR8nRWui6VSePEdvpd-9" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;" value="+Persona (ID, Nombre, Telefono, Email)&lt;div&gt;+getNombre() : String&lt;/div&gt;&lt;div&gt;+setNombre(string) : void&lt;/div&gt;&lt;div&gt;+getTelefono() : String&lt;/div&gt;&lt;div&gt;+setTelefono( String) : void&lt;/div&gt;&lt;div&gt;+getEmail():String&lt;/div&gt;&lt;div&gt;+setEmail(String) : void&lt;/div&gt;&lt;div&gt;+getPrestamos() : List&amp;lt;Prestamo&amp;gt;&lt;/div&gt;&lt;div&gt;+agregarPrestamo(Prestamo)&lt;/div&gt;&lt;div&gt;+borrarPrestamo(Prestamo) :void&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="190" width="380" as="geometry">
             <mxRectangle height="190" width="380" as="alternateBounds" />
           </mxGeometry>
