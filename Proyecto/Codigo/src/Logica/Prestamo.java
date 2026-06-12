@@ -1,3 +1,4 @@
+//falta agregar alerta
 package Logica;
 
 import java.util.ArrayList;
