@@ -32,9 +32,33 @@ public class Prestamo {
 	}
 	
 	public void agregarItem(Item item) {
-		//agregar comprobacion de item para saber si esta prestado o no
 		items.add(item);
-		//se le dice al item que pertenece al prestamo.
+		item.setPrestamo(this);
 	}
+	public void agregarAlerta(String mensaje, int lapso) {
+		
+	}
+	public void quitarItem(Item item) throws Exception {
+		if(!items.contains(item)) {
+			throw new Exception("El item no pertenece al prestamo");
+		}
+		items.remove(item);
+	}
+	public void retornarItem(Item item) throws Exception {
+		if(!items.contains(item)) {
+			throw new Exception("El item no pertenece al prestamo");
+		}
+		int indexItem=items.indexOf(item);
+		Item itemRetornado =items.get(indexItem);
+		itemRetornado.setPrestamo(null);
+		items.remove(indexItem);
+	}
+	public void retornarItems() throws Exception {
+		for (int i=0; i<items.size();i++) {
+			retornarItem(items.get(i));
+		}
+		items.clear();
+	}
+	
 	
 }
