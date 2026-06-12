@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Página-1" id="gEKF-afSuJBGgSwqPxjD">
-    <mxGraphModel dx="4467" dy="2609" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1531" dy="1580" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -10,7 +10,7 @@
         <mxCell id="4vyR8nRWui6VSePEdvpd-2" parent="4vyR8nRWui6VSePEdvpd-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fixedHeader=1;" value="" vertex="1">
           <mxGeometry height="88" width="340" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="4vyR8nRWui6VSePEdvpd-3" parent="4vyR8nRWui6VSePEdvpd-2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;" value="-Nombre : String&lt;div&gt;-Codigo : Int&lt;/div&gt;&lt;div&gt;-Descripcion : String&lt;br&gt;- Prestado : bool&lt;/div&gt;" vertex="1">
+        <mxCell id="4vyR8nRWui6VSePEdvpd-3" parent="4vyR8nRWui6VSePEdvpd-2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;" value="-Nombre : String&lt;div&gt;-Codigo : Int&lt;/div&gt;&lt;div&gt;-Descripcion : String&lt;br&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="88" width="340" as="geometry">
             <mxRectangle height="88" width="340" as="alternateBounds" />
           </mxGeometry>
@@ -18,7 +18,7 @@
         <mxCell id="4vyR8nRWui6VSePEdvpd-4" parent="4vyR8nRWui6VSePEdvpd-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fixedHeader=1;" value="" vertex="1">
           <mxGeometry height="262" width="340" y="118" as="geometry" />
         </mxCell>
-        <mxCell id="4vyR8nRWui6VSePEdvpd-5" parent="4vyR8nRWui6VSePEdvpd-4" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;" value="+Item (Nombre, Codigo, Descripcion, Tipo, Categoria)&lt;div&gt;+ getNombre() : String&lt;/div&gt;&lt;div&gt;+SetNombre(nombre String) : void&lt;/div&gt;&lt;div&gt;+getDescripcion() : String&lt;/div&gt;&lt;div&gt;+setDescripcion(descripcion String) : void&lt;/div&gt;&lt;div&gt;+getCodigo () : int&lt;/div&gt;&lt;div&gt;+getTipo() : Tipo&lt;/div&gt;&lt;div&gt;+getCategorias() : List&amp;lt;Categoria&amp;gt;&lt;/div&gt;&lt;div&gt;+cambiarTipo(Tipo) : void&lt;/div&gt;&lt;div&gt;+agregarCategoria(categoria) : void&lt;/div&gt;&lt;div&gt;+quitarCategoria(categoria) : void&lt;/div&gt;&lt;div&gt;+marcarPrestado() : void&lt;/div&gt;&lt;div&gt;+getPrestado() : bool&lt;/div&gt;" vertex="1">
+        <mxCell id="4vyR8nRWui6VSePEdvpd-5" parent="4vyR8nRWui6VSePEdvpd-4" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;" value="+Item (Nombre, Codigo, Descripcion, Tipo, Categoria)&lt;div&gt;+ getNombre() : String&lt;/div&gt;&lt;div&gt;+SetNombre(nombre String) : void&lt;/div&gt;&lt;div&gt;+getDescripcion() : String&lt;/div&gt;&lt;div&gt;+setDescripcion(descripcion String) : void&lt;/div&gt;&lt;div&gt;+getCodigo () : int&lt;/div&gt;&lt;div&gt;+getTipo() : Tipo&lt;/div&gt;&lt;div&gt;+getCategorias() : List&amp;lt;Categoria&amp;gt;&lt;/div&gt;&lt;div&gt;+cambiarTipo(Tipo) : void&lt;/div&gt;&lt;div&gt;+agregarCategoria(categoria) : void&lt;/div&gt;&lt;div&gt;+quitarCategoria(categoria) : void&lt;/div&gt;&lt;div&gt;+setPrestamo(Prestamo) : void&lt;/div&gt;&lt;div&gt;+getPrestado() : bool&lt;/div&gt;" vertex="1">
           <mxGeometry height="262" width="340" as="geometry">
             <mxRectangle height="262" width="340" as="alternateBounds" />
           </mxGeometry>
