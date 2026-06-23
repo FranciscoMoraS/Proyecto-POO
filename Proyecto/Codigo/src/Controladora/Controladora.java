@@ -42,4 +42,55 @@ public class Controladora {
 		personas.removeIf(Persona -> Persona.getNombre()==nombre);
 	}
 	
+	public Persona consultarPersona(String nombre) {
+		Persona p=null;
+		for (int i=0; i<personas.size(); i++) {
+			if (personas.get(i).getNombre()==nombre) {
+				p=personas.get(i);
+			}
+		}
+		return p;
+	}
+
+	public List<Item> getItems() {
+		return items;
+	}
+	
+	public void crearItem(String nombre, int Codigo, String descripcion, Tipo tipo) {
+		Item item = new Item(nombre, Codigo, descripcion, tipo);
+		items.add(item);
+	}
+	
+	public void modificarItem(String nombre, int codigo,  String descripcion, Tipo tipo) {
+		Item item= null;
+		for (int i=0; i<items.size(); i++) {
+			item=items.get(i);
+			if (item.getCodigo()==codigo) {
+				item.setNombre(nombre);
+				item.setDescripcion(descripcion);
+				item.setTipo(tipo);
+			}
+		}
+	}
+	//agregar un metodo privado para cambiar categorias.
+	public void borrarItem(int codigo) {
+		items.removeIf(Item -> Item.getCodigo()==codigo);
+	}
+	
+	public Item consultarItem (int codigo) {
+		Item item= null;
+		for (int i=0; i<items.size(); i++) {
+			item=items.get(i);
+			if (item.getCodigo()==codigo) {
+				return item;
+			}
+		}
+		return null;
+	}
+
+	public List<Categoria> getCategorias() {
+		return categorias;
+	}
+	
+	
 }
