@@ -14,6 +14,7 @@ public class Controladora {
 	private List<Item> items;
 	private List<Tipo> tipos;
 	private List<Categoria> categorias;
+	private int conteoPrestamos=0;
 	
 	
 	public List<Persona> getPersonas() {
@@ -91,6 +92,100 @@ public class Controladora {
 	public List<Categoria> getCategorias() {
 		return categorias;
 	}
+	
+	public void crearCategoria(String nombre) {
+		Categoria c= new Categoria(nombre);
+		categorias.add(c);
+	}
+	public void modificarCategoria(String nombre) {
+		Categoria c= null;
+		for (int i=0; i<categorias.size();i++) {
+			c= categorias.get(i);
+			if (c.getNombre()==nombre)
+				c.setNombre(nombre);
+		}
+	}
+	public void borrarCategoria(String nombre) {
+		categorias.removeIf(Categoria -> Categoria.getNombre()==nombre);
+	}
+	public Categoria consultarCategoria(String nombre) {
+		Categoria categoria= null;
+		for (int i=0; i<categorias.size(); i++) {
+			categoria=categorias.get(i);
+			if (categoria.getNombre()==nombre) {
+				return categoria;
+			}
+		}
+		return null;
+	}
+	
+
+	public List<Tipo> getTipos() {
+		return tipos;
+	}
+	public void crearTipo(String nombre) {
+		Tipo t= new Tipo(nombre);
+		tipos.add(t);
+	}
+	public void modificarTipo(String nombre) {
+		Tipo t= null;
+		for (int i=0; i<tipos.size();i++) {
+			t= tipos.get(i);
+			if (t.getNombre()==nombre)
+				t.setNombre(nombre);
+		}
+	}
+	public void borrarTipo(String nombre) {
+		tipos.removeIf(Tipo -> Tipo.getNombre()==nombre);
+	}
+	public Tipo consultarTipo(String nombre) {
+		Tipo t= null;
+		for (int i=0; i<tipos.size(); i++) {
+			t=tipos.get(i);
+			if (t.getNombre()==nombre) {
+				return t;
+			}
+		}
+		return t;
+	}
+
+	public List<Prestamo> getPrestamos() {
+		return prestamos;
+	}
+	
+	public void crearPrestamo(Persona persona) {
+		Prestamo p= new Prestamo(persona, conteoPrestamos);
+		prestamos.add(p);
+		conteoPrestamos++;
+	}
+	public void agregarItemPrestamo(int ID, Item item) throws Exception {
+		if (ID>conteoPrestamos || ID<0)
+			throw new Exception("Index fuera de rango");
+		Prestamo p= prestamos.get(ID);
+		p.agregarItem(item);
+	}
+	public void eliminarItemPrestamo(int ID, Item item) throws Exception{
+		if (ID>conteoPrestamos || ID<0)
+			throw new Exception("Index fuera de rango");
+		Prestamo p= prestamos.get(ID);
+		p.quitarItem(item);
+	}
+	public void retornarItemPrestamo(int ID, Item item) throws Exception{
+		if (ID>conteoPrestamos || ID<0)
+			throw new Exception("Index fuera de rango");
+		Prestamo p= prestamos.get(ID);
+		p.retornarItem(item);
+	}
+	
+	public void terminarPrestamo(int ID) throws Exception{
+		if (ID>conteoPrestamos || ID<0)
+			throw new Exception("Index fuera de rango");
+		Prestamo p= prestamos.get(ID);
+		p.retornarItems();
+		prestamos.remove(p);
+	}
+	// cambiar logica de prestamo para usar un diccionario
+	
 	
 	
 }
