@@ -157,22 +157,32 @@ public class Controladora {
 		Tipo t= new Tipo(nombre);
 		tipos.add(t);
 	}
-	public void modificarTipo(String nombre) {
+	public void modificarTipo(String nombreOriginal, String nombreNuevo) {
 		Tipo t= null;
 		for (int i=0; i<tipos.size();i++) {
 			t= tipos.get(i);
-			if (t.getNombre()==nombre)
-				t.setNombre(nombre);
+			if (t.getNombre().equals(nombreOriginal))
+				t.setNombre(nombreNuevo);
 		}
 	}
 	public void borrarTipo(String nombre) {
-		tipos.removeIf(Tipo -> Tipo.getNombre()==nombre);
+	    Tipo tipoGenerico = tipos.get(0);
+	    Tipo tipo = consultarTipo(nombre);
+	    
+	    if (tipo != null && tipo != tipoGenerico) {
+	        for (Item item : items) {
+	            if (item.getTipo() == tipo) {
+	                item.setTipo(tipoGenerico);
+	            }
+	        }
+	        tipos.remove(tipo);
+	    }
 	}
 	public Tipo consultarTipo(String nombre) {
 		Tipo t= null;
 		for (int i=0; i<tipos.size(); i++) {
 			t=tipos.get(i);
-			if (t.getNombre()==nombre) {
+			if (t.getNombre().equals(nombre)) {
 				return t;
 			}
 		}

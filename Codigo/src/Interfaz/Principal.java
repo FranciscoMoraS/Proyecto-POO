@@ -467,18 +467,105 @@ public class Principal {
 		JButton crearTipo = new JButton("Crear Tipo");
 		crearTipo.setBounds(450, 38, 119, 20);
 		tipos.add(crearTipo);
+		crearTipo.addActionListener(e -> {
+		    dialogCrearCategoria dialog = new dialogCrearCategoria(frame);
+		    dialog.setVisible(true);
+
+		    if (dialog.isConfirmado()) {
+		        controladora.crearTipo(dialog.getNombre());
+		        actualizarTablaTipos();
+		    }
+		});
 		
 		JButton modificarTipo = new JButton("Modificar Tipo");
 		modificarTipo.setBounds(450, 101, 119, 20);
 		tipos.add(modificarTipo);
+		modificarTipo.addActionListener(e -> {
+		    int filaSeleccionada = tablaTipos.getSelectedRow();
+
+		    if (filaSeleccionada == -1) {
+		        JOptionPane.showMessageDialog(frame, "Seleccione un tipo primero");
+		        return;
+		    }
+
+		    String nombre = (String) tablaTipos.getValueAt(filaSeleccionada, 0);
+		    dialogCrearCategoria dialog = new dialogCrearCategoria(frame);
+		    dialog.setNombre(nombre);
+		    dialog.setVisible(true);
+
+		    if (dialog.isConfirmado()) {
+		        controladora.modificarTipo(nombre, dialog.getNombre());
+		        actualizarTablaTipos();
+		    }
+		});
+
 		
 		JButton borrarTipo = new JButton("Borrar Tipo");
 		borrarTipo.setBounds(450, 170, 119, 20);
 		tipos.add(borrarTipo);
+		borrarTipo.addActionListener(e -> {
+		    int filaSeleccionada = tablaTipos.getSelectedRow();
+
+		    if (filaSeleccionada == -1) {
+		        JOptionPane.showMessageDialog(frame, "Seleccione un tipo primero");
+		        return;
+		    }
+
+		    if (filaSeleccionada == 0) {
+		        JOptionPane.showMessageDialog(frame, "El tipo genérico no se puede borrar");
+		        return;
+		    }
+
+		    String nombre = (String) tablaTipos.getValueAt(filaSeleccionada, 0);
+		    Tipo tipo = controladora.consultarTipo(nombre);
+
+		    StringBuilder itemsDelTipo = new StringBuilder();
+		    for (Item item : controladora.getItems()) {
+		        if (item.getTipo().getNombre().equals(nombre)) {
+		            if (itemsDelTipo.length() > 0) itemsDelTipo.append(", ");
+		            itemsDelTipo.append(item.getNombre());
+		        }
+		    }
+
+		    String mensaje = "¿Está seguro que desea borrar el tipo: " + nombre + "?\n";
+		    if (itemsDelTipo.length() > 0) {
+		        mensaje += "Los siguientes items pasarán al tipo genérico:\n" + itemsDelTipo.toString();
+		    } else {
+		        mensaje += "No hay items con este tipo.";
+		    }
+
+		    int respuesta = JOptionPane.showConfirmDialog(
+		        frame,
+		        mensaje,
+		        "Confirmar borrado",
+		        JOptionPane.YES_NO_OPTION
+		    );
+
+		    if (respuesta == JOptionPane.YES_OPTION) {
+		        controladora.borrarTipo(nombre);
+		        actualizarTablaTipos();
+		        actualizarTablaItems(); 
+		    }
+		});
 		
 		JButton consultarTipo = new JButton("Consultar Tipo");
 		consultarTipo.setBounds(450, 243, 119, 20);
 		tipos.add(consultarTipo);
+		consultarTipo.addActionListener(e -> {
+		    int filaSeleccionada = tablaTipos.getSelectedRow();
+
+		    if (filaSeleccionada == -1) {
+		        JOptionPane.showMessageDialog(frame, "Seleccione un tipo primero");
+		        return;
+		    }
+
+		    String nombre = (String) tablaTipos.getValueAt(filaSeleccionada, 0);
+		    Tipo tipo = controladora.consultarTipo(nombre);
+
+		    dialogConsultarTipo dialog = new dialogConsultarTipo(frame, tipo, controladora.getItems());
+		    dialog.setVisible(true);
+		});
+		
 		
 		JButton mostrarVentanaItems = new JButton("Items");
 		mostrarVentanaItems.setBounds(32, 20, 84, 20);
@@ -506,6 +593,13 @@ public class Principal {
 		JPanel ventanaReportes = new JPanel();
 		tabbedPane.addTab("Reportes", null, ventanaReportes, null);
 		ventanaReportes.setLayout(null);
+		
+		
+		
+		actualizarTablaItems();
+		actualizarTablaPersonas();
+		actualizarTablaCategorias();
+		actualizarTablaTipos();
 	}
 	private void actualizarTablaItems() {
 	    DefaultTableModel modelo = (DefaultTableModel) tablaItems.getModel();
@@ -536,6 +630,14 @@ public class Principal {
 
 	    for (Logica.Categoria categoria : controladora.getCategorias()) {
 	        modelo.addRow(new Object[] { categoria.getNombre() });
+	    }
+	}
+	private void actualizarTablaTipos() {
+	    DefaultTableModel modelo = (DefaultTableModel) tablaTipos.getModel();
+	    modelo.setRowCount(0);
+
+	    for (Tipo tipo : controladora.getTipos()) {
+	        modelo.addRow(new Object[] { tipo.getNombre() });
 	    }
 	}
 }
