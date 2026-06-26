@@ -63,10 +63,14 @@ public class Prestamo implements Serializable{
 		items.remove(indexItem);
 	}
 	public void retornarItems() throws Exception {
-		for (int i=0; i<items.size();i++) {
-			retornarItem(items.get(i));
-		}
-		items.clear();
+	    List<Item> copia = new ArrayList<>(items);
+	    for (Item item : copia) {
+	        retornarItem(item);
+	    }
+	    items.clear();
+	}
+	public boolean tieneAlerta() {
+		return alerta!=null;
 	}
 	
 	

@@ -61,5 +61,9 @@ public class Persona implements Serializable{
 	public boolean tienePrestamos() {
 		return prestamos.size()>0;
 	}
+	
+	public String toString() {
+		return Nombre;
+	}
 
 }

@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import java.awt.GridLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.CardLayout;
@@ -18,6 +19,7 @@ import javax.swing.table.DefaultTableModel;
 
 import Logica.Item;
 import Logica.Persona;
+import Logica.Prestamo;
 import Logica.Tipo;
 import Controladora.Controladora;
 
@@ -29,6 +31,7 @@ public class Principal {
 	private JTable tablaPersonas;
 	private JTable tablaCategorias;
 	private JTable tablaTipos;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -595,17 +598,238 @@ public class Principal {
 		mostrarVentanaTipos.addActionListener(e->cardLayoutAdministracion.show(contenidoAdministracion, "ventanaTipos"));
 		JPanel ventanaPrestamos = new JPanel();
 		tabbedPane.addTab("Prestamos", null, ventanaPrestamos, null);
+		ventanaPrestamos.setLayout(null);
+		
+		JButton hacerPrestamo = new JButton("Hacer un prestamo");
+		hacerPrestamo.setBounds(491, 65, 135, 20);
+		ventanaPrestamos.add(hacerPrestamo);
+		hacerPrestamo.addActionListener(e -> {
+		    dialogHacerPrestamo dialog = new dialogHacerPrestamo(frame, controladora.getPersonas(), controladora.getItems());
+		    dialog.setVisible(true);
+
+		    if (dialog.isConfirmado()) {
+		        Persona persona = dialog.getPersonaSeleccionada();
+		        controladora.crearPrestamo(persona);
+		        int idPrestamo = controladora.getConteoPrestamos()-1;
+		        for (Item item : dialog.getItemsEnPrestamo()) {
+		            try {
+		                controladora.agregarItemPrestamo(idPrestamo, item);
+		            } catch (Exception ex) {
+		                ex.printStackTrace();
+		            }
+		        }
+		        actualizarTablaPrestamos();
+		    }
+		});
+		
+		JButton modificarPrestamo = new JButton("Modificar un Prestamo");
+		modificarPrestamo.setBounds(491, 144, 135, 20);
+		ventanaPrestamos.add(modificarPrestamo);
+		modificarPrestamo.addActionListener(e -> {
+		    int filaSeleccionada = table.getSelectedRow();
+
+		    if (filaSeleccionada == -1) {
+		        JOptionPane.showMessageDialog(frame, "Seleccione un préstamo primero");
+		        return;
+		    }
+
+		    int id = (int) table.getValueAt(filaSeleccionada, 0);
+		    Logica.Prestamo prestamo = controladora.getPrestamos().get(id);
+
+		    dialogModificarPrestamo dialog = new dialogModificarPrestamo(frame, prestamo);
+		    dialog.setVisible(true);
+
+		    if (dialog.isConfirmado()) {
+		        actualizarTablaPrestamos();
+		        actualizarTablaItems();
+		    }
+		});
+		
+		JButton terminarPrestamo = new JButton("Terminar un Prestamo");
+		terminarPrestamo.setBounds(491, 234, 135, 20);
+		ventanaPrestamos.add(terminarPrestamo);
+		terminarPrestamo.addActionListener(e -> {
+		    int filaSeleccionada = table.getSelectedRow();
+
+		    if (filaSeleccionada == -1) {
+		        JOptionPane.showMessageDialog(frame, "Seleccione un préstamo primero");
+		        return;
+		    }
+
+		    int id = (int) table.getValueAt(filaSeleccionada, 0);
+		    Logica.Prestamo prestamo = controladora.getPrestamos().get(id);
+
+		    int respuesta = JOptionPane.showConfirmDialog(
+		        frame,
+		        "¿Está seguro que desea terminar el préstamo ID: " + id + " de " + prestamo.getPersona().getNombre() + "?",
+		        "Confirmar",
+		        JOptionPane.YES_NO_OPTION
+		    );
+
+		    if (respuesta == JOptionPane.YES_OPTION) {
+
+		        try {
+		            controladora.terminarPrestamo(id);
+		        } catch (Exception ex) {
+		            ex.printStackTrace();
+		        }
+		        actualizarTablaPrestamos();
+		        actualizarTablaItems();
+		    }
+		});
+		
+		JScrollPane scrollPane_4 = new JScrollPane();
+		scrollPane_4.setBounds(10, 10, 450, 358);
+		ventanaPrestamos.add(scrollPane_4);
+		
+		table = new JTable();
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"ID", "Persona", "Items", "Alerta"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				Integer.class, String.class, String.class, String.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+			boolean[] columnEditables = new boolean[] {
+				false, false, false, false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		scrollPane_4.setViewportView(table);
 		
 		JPanel ventanaReportes = new JPanel();
 		tabbedPane.addTab("Reportes", null, ventanaReportes, null);
 		ventanaReportes.setLayout(null);
 		
+		JButton reporteUsuarios = new JButton("Generar Reporte Por Usuario");
+		reporteUsuarios.setBounds(42, 34, 249, 120);
+		ventanaReportes.add(reporteUsuarios);
+		reporteUsuarios.addActionListener(e -> {
+		    List<Persona> personasOrdenadas = new ArrayList<>(controladora.getPersonas());
+		    personasOrdenadas.sort((a, b) -> a.getNombre().compareTo(b.getNombre()));
+
+		    String[] columnas = { "Nombre", "Teléfono", "Email", "ID Préstamos" };
+		    Object[][] datos = new Object[personasOrdenadas.size()][4];
+
+		    for (int i = 0; i < personasOrdenadas.size(); i++) {
+		        Persona persona = personasOrdenadas.get(i);
+
+		        StringBuilder ids = new StringBuilder();
+		        for (Prestamo p : persona.getPrestamos()) {
+		            if (ids.length() > 0) ids.append(", ");
+		            ids.append(p.getID());
+		        }
+
+		        datos[i][0] = persona.getNombre();
+		        datos[i][1] = persona.getTelefono();
+		        datos[i][2] = persona.getEmail();
+		        datos[i][3] = ids.length() > 0 ? ids.toString() : "Sin préstamos";
+		    }
+
+		    dialogReportes dialog = new dialogReportes(frame, "Reporte por Usuario", columnas, datos);
+		    dialog.setVisible(true);
+		});
+		
+		JButton reporteItem = new JButton("Generar Reporte Por Item");
+		reporteItem.setBounds(379, 34, 249, 120);
+		ventanaReportes.add(reporteItem);
+		reporteItem.addActionListener(e -> {
+		    List<Item> itemsOrdenados = new ArrayList<>(controladora.getItems());
+		    itemsOrdenados.sort((a, b) -> a.getNombre().compareTo(b.getNombre()));
+
+		    String[] columnas = { "Nombre", "Descripción", "Tipo", "Categorías", "Préstamo" };
+		    Object[][] datos = new Object[itemsOrdenados.size()][5];
+
+		    for (int i = 0; i < itemsOrdenados.size(); i++) {
+		        Item item = itemsOrdenados.get(i);
+
+		        StringBuilder categoriasReporte = new StringBuilder();
+		        for (Logica.Categoria c : item.getCategorias()) {
+		            if (categoriasReporte.length() > 0) categoriasReporte.append(", ");
+		            categoriasReporte.append(c.getNombre());
+		        }
+
+		        datos[i][0] = item.getNombre();
+		        datos[i][1] = item.getDescripcion();
+		        datos[i][2] = item.getTipo().getNombre();
+		        datos[i][3] = categoriasReporte.length() > 0 ? categoriasReporte.toString() : "Sin categorías";
+		        datos[i][4] = item.Prestado() ? "Préstamo ID: " + item.getPrestamo().getID() : "Disponible";
+		    }
+
+		    dialogReportes dialog = new dialogReportes(frame, "Reporte por Item", columnas, datos);
+		    dialog.setVisible(true);
+		});
+		
+		JButton reporteCategoria = new JButton("Generar Reporte Por Categoria");
+		reporteCategoria.setBounds(42, 229, 249, 114);
+		ventanaReportes.add(reporteCategoria);
+		reporteCategoria.addActionListener(e -> {
+		    List<Logica.Categoria> categoriasOrdenadas = new ArrayList<>(controladora.getCategorias());
+		    categoriasOrdenadas.sort((a, b) -> a.getNombre().compareTo(b.getNombre()));
+
+		    String[] columnas = { "Categoría", "Items" };
+		    Object[][] datos = new Object[categoriasOrdenadas.size()][2];
+
+		    for (int i = 0; i < categoriasOrdenadas.size(); i++) {
+		        Logica.Categoria categoria = categoriasOrdenadas.get(i);
+
+		        StringBuilder itemsNombres = new StringBuilder();
+		        for (Item item : categoria.getItems()) {
+		            if (itemsNombres.length() > 0) itemsNombres.append(", ");
+		            itemsNombres.append(item.getNombre());
+		        }
+
+		        datos[i][0] = categoria.getNombre();
+		        datos[i][1] = itemsNombres.length() > 0 ? itemsNombres.toString() : "Sin items";
+		    }
+
+		    dialogReportes dialog = new dialogReportes(frame, "Reporte por Categoría", columnas, datos);
+		    dialog.setVisible(true);
+		});
+		
+		JButton reporteTipo = new JButton("Generar Reporte Por Tipo");
+		reporteTipo.setBounds(379, 229, 249, 114);
+		ventanaReportes.add(reporteTipo);
+		reporteTipo.addActionListener(e -> {
+		    List<Tipo> tiposOrdenados = new ArrayList<>(controladora.getTipos());
+		    tiposOrdenados.sort((a, b) -> a.getNombre().compareTo(b.getNombre()));
+
+		    String[] columnas = { "Tipo", "Items" };
+		    Object[][] datos = new Object[tiposOrdenados.size()][2];
+
+		    for (int i = 0; i < tiposOrdenados.size(); i++) {
+		        Tipo tipo = tiposOrdenados.get(i);
+
+		        StringBuilder itemsNombres = new StringBuilder();
+		        for (Item item : controladora.getItems()) {
+		            if (item.getTipo() == tipo) {
+		                if (itemsNombres.length() > 0) itemsNombres.append(", ");
+		                itemsNombres.append(item.getNombre());
+		            }
+		        }
+
+		        datos[i][0] = tipo.getNombre();
+		        datos[i][1] = itemsNombres.length() > 0 ? itemsNombres.toString() : "Sin items";
+		    }
+
+		    dialogReportes dialog = new dialogReportes(frame, "Reporte por Tipo", columnas, datos);
+		    dialog.setVisible(true);
+		});
 		
 		
 		actualizarTablaItems();
 		actualizarTablaPersonas();
 		actualizarTablaCategorias();
 		actualizarTablaTipos();
+		actualizarTablaPrestamos();
 	}
 	private void actualizarTablaItems() {
 	    DefaultTableModel modelo = (DefaultTableModel) tablaItems.getModel();
@@ -644,6 +868,24 @@ public class Principal {
 
 	    for (Tipo tipo : controladora.getTipos()) {
 	        modelo.addRow(new Object[] { tipo.getNombre() });
+	    }
+	}
+	private void actualizarTablaPrestamos() {
+	    DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+	    modelo.setRowCount(0);
+
+	    for (Prestamo prestamo : controladora.getPrestamos().values()) {
+	        StringBuilder itemsNombres = new StringBuilder();
+	        for (Item item : prestamo.getItems()) {
+	            if (itemsNombres.length() > 0) itemsNombres.append(", ");
+	            itemsNombres.append(item.getNombre());
+	        }
+	        modelo.addRow(new Object[] {
+	            prestamo.getID(),
+	            prestamo.getPersona().getNombre(),
+	            itemsNombres.toString(),
+	            "" // alerta por ahora vacía
+	        });
 	    }
 	}
 }

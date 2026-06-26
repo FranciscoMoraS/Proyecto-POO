@@ -6,7 +6,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import Logica.Categoria;
 import Logica.Item;
@@ -17,7 +19,7 @@ import Logica.Tipo;
 public class Controladora implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private List<Persona> personas;
-	private List<Prestamo> prestamos;
+	private Map<Integer, Prestamo> prestamos;
 	private List<Item> items;
 	private List<Tipo> tipos;
 	private List<Categoria> categorias;
@@ -26,7 +28,7 @@ public class Controladora implements Serializable{
 	
 	public Controladora() {
 		personas = new ArrayList<Persona>();
-		prestamos = new ArrayList<Prestamo>();
+		prestamos = new HashMap<>();
 		items = new ArrayList<Item>();
 		tipos = new ArrayList<Tipo>();
 		categorias= new ArrayList<Categoria>();
@@ -195,42 +197,49 @@ public class Controladora implements Serializable{
 		return t;
 	}
 
-	public List<Prestamo> getPrestamos() {
+	public Map<Integer, Prestamo> getPrestamos() {
 		return prestamos;
 	}
 	
 	public void crearPrestamo(Persona persona) {
 		Prestamo p= new Prestamo(persona, conteoPrestamos);
-		prestamos.add(p);
+		prestamos.put(conteoPrestamos, p);
+		try {
+	        persona.agregarPrestamo(p);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 		conteoPrestamos++;
 	}
 	public void agregarItemPrestamo(int ID, Item item) throws Exception {
-		if (ID>conteoPrestamos || ID<0)
-			throw new Exception("Index fuera de rango");
 		Prestamo p= prestamos.get(ID);
+		if (p==null)
+			throw new Exception("Index fuera de rango");
 		p.agregarItem(item);
 	}
+	
 	public void eliminarItemPrestamo(int ID, Item item) throws Exception{
-		if (ID>conteoPrestamos || ID<0)
-			throw new Exception("Index fuera de rango");
 		Prestamo p= prestamos.get(ID);
+		if (p==null)
+			throw new Exception("Index fuera de rango");
 		p.quitarItem(item);
 	}
 	public void retornarItemPrestamo(int ID, Item item) throws Exception{
-		if (ID>conteoPrestamos || ID<0)
-			throw new Exception("Index fuera de rango");
 		Prestamo p= prestamos.get(ID);
+		if (p==null)
+			throw new Exception("Index fuera de rango");
 		p.retornarItem(item);
 	}
 	
 	public void terminarPrestamo(int ID) throws Exception{
-		if (ID>conteoPrestamos || ID<0)
-			throw new Exception("Index fuera de rango");
+		
 		Prestamo p= prestamos.get(ID);
+		if (p==null)
+			throw new Exception("Index fuera de rango");
 		p.retornarItems();
-		prestamos.remove(p);
+		p.getPersona().borrarPrestamo(p);
+		prestamos.remove(ID);
 	}
-	// cambiar logica de prestamo para usar un diccionario
 	
 	public void guardarDatos() {
 	    try (ObjectOutputStream oos = new ObjectOutputStream(
@@ -248,6 +257,9 @@ public class Controladora implements Serializable{
 	    } catch (Exception e) {
 	        return new Controladora();
 	    }
+	}
+	public int getConteoPrestamos() {
+		return conteoPrestamos;
 	}
 	
 }
