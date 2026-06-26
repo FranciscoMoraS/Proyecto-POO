@@ -1,5 +1,10 @@
 package Controladora;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +14,8 @@ import Logica.Persona;
 import Logica.Prestamo;
 import Logica.Tipo;
 
-public class Controladora {
+public class Controladora implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private List<Persona> personas;
 	private List<Prestamo> prestamos;
 	private List<Item> items;
@@ -226,6 +232,22 @@ public class Controladora {
 	}
 	// cambiar logica de prestamo para usar un diccionario
 	
+	public void guardarDatos() {
+	    try (ObjectOutputStream oos = new ObjectOutputStream(
+	            new FileOutputStream("datos.ser"))) {
+	        oos.writeObject(this);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
 	
+	public static Controladora cargarDatos() {
+	    try (ObjectInputStream ois = new ObjectInputStream(
+	            new FileInputStream("datos.ser"))) {
+	        return (Controladora) ois.readObject();
+	    } catch (Exception e) {
+	        return new Controladora();
+	    }
+	}
 	
 }

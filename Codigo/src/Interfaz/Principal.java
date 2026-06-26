@@ -57,11 +57,16 @@ public class Principal {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		controladora= new Controladora();
-		//controladora.crearTipo("Inicial");
+		controladora = Controladora.cargarDatos();;
 		frame = new JFrame();
 		frame.setBounds(100, 100, 678, 442);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+		    public void windowClosing(java.awt.event.WindowEvent e) {
+		        controladora.guardarDatos();
+		        System.exit(0);
+		    }
+		});
 		frame.getContentPane().setLayout(null);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -115,16 +120,17 @@ public class Principal {
 		crearItem.setBounds(461, 46, 122, 20);
 		items.add(crearItem);
 		crearItem.addActionListener(e -> {
-		    List tipos = controladora.getTipos(); // obtienes la lista del controlador
-		    dialogCrearItem dialog = new dialogCrearItem(frame, tipos);
+		    dialogCrearItem dialog = new dialogCrearItem(frame, controladora.getTipos(), controladora.getCategorias());
 		    dialog.setVisible(true);
 
 		    if (dialog.isConfirmado()) {
 		        String nombre = dialog.getNombre();
 		        String descripcion = dialog.getDescripcion();
 		        Tipo tipo = (Tipo) dialog.getTipoSeleccionado();
-		        
+
 		        controladora.crearItem(nombre, descripcion, tipo);
+		        Item itemCreado = controladora.getItems().get(controladora.getItems().size() - 1);
+		        controladora.modificarCategoriasItem(itemCreado.getCodigo(), dialog.getCategoriasSeleccionadas(controladora.getCategorias()));
 		        actualizarTablaItems();
 		    }
 		});
