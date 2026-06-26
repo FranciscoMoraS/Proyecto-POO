@@ -27,6 +27,8 @@ public class Principal {
 	private JTable tablaItems;
 	private Controladora controladora;
 	private JTable tablaPersonas;
+	private JTable tablaCategorias;
+	private JTable tablaTipos;
 
 	/**
 	 * Launch the application.
@@ -322,8 +324,161 @@ public class Principal {
 		
 		JPanel categorias = new JPanel();
 		contenidoAdministracion.add(categorias, "ventanaCategorias");
+		categorias.setLayout(null);
+		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(10, 10, 405, 296);
+		categorias.add(scrollPane_2);
+		
+		tablaCategorias = new JTable();
+		tablaCategorias.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Nombre"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				String.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+			boolean[] columnEditables = new boolean[] {
+				false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		scrollPane_2.setViewportView(tablaCategorias);
+		
+		JButton crearCategoria = new JButton("Crear Categoria");
+		crearCategoria.setBounds(465, 41, 125, 20);
+		categorias.add(crearCategoria);
+		crearCategoria.addActionListener(e -> {
+		    dialogCrearCategoria dialog = new dialogCrearCategoria(frame);
+		    dialog.setVisible(true);
+
+		    if (dialog.isConfirmado()) {
+		        controladora.crearCategoria(dialog.getNombre());
+		        actualizarTablaCategorias();
+		    }
+		});
+		
+		JButton modificarCategoria = new JButton("modificarCategoria");
+		modificarCategoria.setBounds(465, 102, 125, 20);
+		categorias.add(modificarCategoria);
+		modificarCategoria.addActionListener(e -> {
+		    int filaSeleccionada = tablaCategorias.getSelectedRow();
+
+		    if (filaSeleccionada == -1) {
+		        JOptionPane.showMessageDialog(frame, "Seleccione una categoría primero");
+		        return;
+		    }
+
+		    String nombre = (String) tablaCategorias.getValueAt(filaSeleccionada, 0);
+		    dialogCrearCategoria dialog = new dialogCrearCategoria(frame);
+		    dialog.setNombre(nombre);
+		    dialog.setVisible(true);
+
+		    if (dialog.isConfirmado()) {
+		        controladora.modificarCategoria(nombre, dialog.getNombre());
+		        actualizarTablaCategorias();
+		    }
+		});
+		
+		JButton borrarCategoria = new JButton("Borrar Categoria");
+		borrarCategoria.setBounds(465, 160, 125, 20);
+		categorias.add(borrarCategoria);
+		borrarCategoria.addActionListener(e -> {
+		    int filaSeleccionada = tablaCategorias.getSelectedRow();
+
+		    if (filaSeleccionada == -1) {
+		        JOptionPane.showMessageDialog(frame, "Seleccione una categoría primero");
+		        return;
+		    }
+
+		    String nombre = (String) tablaCategorias.getValueAt(filaSeleccionada, 0);
+
+		    int respuesta = JOptionPane.showConfirmDialog(
+		        frame,
+		        "¿Está seguro que desea borrar la categoría: " + nombre + "?",
+		        "Confirmar borrado",
+		        JOptionPane.YES_NO_OPTION
+		    );
+
+		    if (respuesta == JOptionPane.YES_OPTION) {
+		        controladora.borrarCategoria(nombre);
+		        actualizarTablaCategorias();
+		    }
+		});
+		
+		JButton consultarCategoria = new JButton("Consultar Categoria");
+		consultarCategoria.setBounds(465, 221, 125, 20);
+		categorias.add(consultarCategoria);
+		consultarCategoria.addActionListener(e -> {
+		    int filaSeleccionada = tablaCategorias.getSelectedRow();
+
+		    if (filaSeleccionada == -1) {
+		        JOptionPane.showMessageDialog(frame, "Seleccione una categoría primero");
+		        return;
+		    }
+
+		    String nombre = (String) tablaCategorias.getValueAt(filaSeleccionada, 0);
+		    Logica.Categoria categoria = controladora.consultarCategoria(nombre);
+
+		    dialogConsultarCategoria dialog = new dialogConsultarCategoria(frame, categoria);
+		    dialog.setVisible(true);
+		});
+		
+		
 		JPanel tipos = new JPanel();
 		contenidoAdministracion.add(tipos, "ventanaTipos");
+		tipos.setLayout(null);
+		
+		JScrollPane scrollPane_3 = new JScrollPane();
+		scrollPane_3.setBounds(10, 10, 380, 296);
+		tipos.add(scrollPane_3);
+		
+		tablaTipos = new JTable();
+		tablaTipos.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Nombre"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				String.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+			boolean[] columnEditables = new boolean[] {
+				false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		scrollPane_3.setViewportView(tablaTipos);
+		
+		JButton crearTipo = new JButton("Crear Tipo");
+		crearTipo.setBounds(450, 38, 119, 20);
+		tipos.add(crearTipo);
+		
+		JButton modificarTipo = new JButton("Modificar Tipo");
+		modificarTipo.setBounds(450, 101, 119, 20);
+		tipos.add(modificarTipo);
+		
+		JButton borrarTipo = new JButton("Borrar Tipo");
+		borrarTipo.setBounds(450, 170, 119, 20);
+		tipos.add(borrarTipo);
+		
+		JButton consultarTipo = new JButton("Consultar Tipo");
+		consultarTipo.setBounds(450, 243, 119, 20);
+		tipos.add(consultarTipo);
 		
 		JButton mostrarVentanaItems = new JButton("Items");
 		mostrarVentanaItems.setBounds(32, 20, 84, 20);
@@ -373,6 +528,14 @@ public class Principal {
 	            persona.getTelefono(),
 	            persona.getEmail()
 	        });
+	    }
+	}
+	private void actualizarTablaCategorias() {
+	    DefaultTableModel modelo = (DefaultTableModel) tablaCategorias.getModel();
+	    modelo.setRowCount(0);
+
+	    for (Logica.Categoria categoria : controladora.getCategorias()) {
+	        modelo.addRow(new Object[] { categoria.getNombre() });
 	    }
 	}
 }

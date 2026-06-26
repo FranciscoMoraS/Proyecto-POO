@@ -88,11 +88,13 @@ public class Controladora {
 	public void modificarCategoriasItem(int codigo, List<Categoria> categoriasNuevas) {
 	    Item item = consultarItem(codigo);
 	    if (item != null) {
-	        List<Categoria> categorias= item.getCategorias();
-	        categorias.clear();
-	        
+	        for (Categoria c : item.getCategorias()) {
+	            c.quitarItem(item);
+	        }
+	        item.getCategorias().clear();
 	        for (Categoria c : categoriasNuevas) {
 	            item.agregarCategoria(c);
+	            c.agregarItem(item);      
 	        }
 	    }
 	}
@@ -119,22 +121,28 @@ public class Controladora {
 		Categoria c= new Categoria(nombre);
 		categorias.add(c);
 	}
-	public void modificarCategoria(String nombre) {
+	public void modificarCategoria(String nombreOriginal, String nombreNuevo) {
 		Categoria c= null;
 		for (int i=0; i<categorias.size();i++) {
 			c= categorias.get(i);
-			if (c.getNombre()==nombre)
-				c.setNombre(nombre);
+			if (c.getNombre().equals(nombreOriginal))
+				c.setNombre(nombreNuevo);
 		}
 	}
 	public void borrarCategoria(String nombre) {
-		categorias.removeIf(Categoria -> Categoria.getNombre()==nombre);
+	    Categoria categoria = consultarCategoria(nombre);
+	    if (categoria != null) {
+	        for (Item item : items) {
+	            item.quitarCategoria(categoria);
+	        }
+	        categorias.remove(categoria);
+	    }
 	}
 	public Categoria consultarCategoria(String nombre) {
 		Categoria categoria= null;
 		for (int i=0; i<categorias.size(); i++) {
 			categoria=categorias.get(i);
-			if (categoria.getNombre()==nombre) {
+			if (categoria.getNombre().equals(nombre)) {
 				return categoria;
 			}
 		}
