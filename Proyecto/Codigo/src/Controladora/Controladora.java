@@ -1,7 +1,14 @@
 package Controladora;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import Logica.Categoria;
 import Logica.Item;
@@ -9,9 +16,10 @@ import Logica.Persona;
 import Logica.Prestamo;
 import Logica.Tipo;
 
-public class Controladora {
+public class Controladora implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private List<Persona> personas;
-	private List<Prestamo> prestamos;
+	private Map<Integer, Prestamo> prestamos;
 	private List<Item> items;
 	private List<Tipo> tipos;
 	private List<Categoria> categorias;
@@ -20,7 +28,7 @@ public class Controladora {
 	
 	public Controladora() {
 		personas = new ArrayList<Persona>();
-		prestamos = new ArrayList<Prestamo>();
+		prestamos = new HashMap<>();
 		items = new ArrayList<Item>();
 		tipos = new ArrayList<Tipo>();
 		categorias= new ArrayList<Categoria>();
@@ -38,12 +46,12 @@ public class Controladora {
 		personas.add(p);
 	}
 	
-	public void modificarPersona(String nombre, String telefono, String email) {
+	public void modificarPersona(String nombreOriginal, String nombreNuevo, String telefono, String email) {
 		Persona p;
 		for (int i=0;i<personas.size();i++) {
-			if (personas.get(i).getNombre()==nombre) {
+			if (personas.get(i).getNombre().equals(nombreOriginal)) {
 				p= personas.get(i);
-				p.setNombre(nombre);
+				p.setNombre(nombreNuevo);
 				p.setEmail(email);
 				p.setTelefono(telefono);
 			}
@@ -57,7 +65,7 @@ public class Controladora {
 	public Persona consultarPersona(String nombre) {
 		Persona p=null;
 		for (int i=0; i<personas.size(); i++) {
-			if (personas.get(i).getNombre()==nombre) {
+			if (personas.get(i).getNombre().equals(nombre)) {
 				p=personas.get(i);
 			}
 		}
@@ -88,11 +96,13 @@ public class Controladora {
 	public void modificarCategoriasItem(int codigo, List<Categoria> categoriasNuevas) {
 	    Item item = consultarItem(codigo);
 	    if (item != null) {
-	        List<Categoria> categorias= item.getCategorias();
-	        categorias.clear();
-	        
+	        for (Categoria c : item.getCategorias()) {
+	            c.quitarItem(item);
+	        }
+	        item.getCategorias().clear();
 	        for (Categoria c : categoriasNuevas) {
 	            item.agregarCategoria(c);
+	            c.agregarItem(item);      
 	        }
 	    }
 	}
@@ -119,22 +129,28 @@ public class Controladora {
 		Categoria c= new Categoria(nombre);
 		categorias.add(c);
 	}
-	public void modificarCategoria(String nombre) {
+	public void modificarCategoria(String nombreOriginal, String nombreNuevo) {
 		Categoria c= null;
 		for (int i=0; i<categorias.size();i++) {
 			c= categorias.get(i);
-			if (c.getNombre()==nombre)
-				c.setNombre(nombre);
+			if (c.getNombre().equals(nombreOriginal))
+				c.setNombre(nombreNuevo);
 		}
 	}
 	public void borrarCategoria(String nombre) {
-		categorias.removeIf(Categoria -> Categoria.getNombre()==nombre);
+	    Categoria categoria = consultarCategoria(nombre);
+	    if (categoria != null) {
+	        for (Item item : items) {
+	            item.quitarCategoria(categoria);
+	        }
+	        categorias.remove(categoria);
+	    }
 	}
 	public Categoria consultarCategoria(String nombre) {
 		Categoria categoria= null;
 		for (int i=0; i<categorias.size(); i++) {
 			categoria=categorias.get(i);
-			if (categoria.getNombre()==nombre) {
+			if (categoria.getNombre().equals(nombre)) {
 				return categoria;
 			}
 		}
@@ -149,65 +165,101 @@ public class Controladora {
 		Tipo t= new Tipo(nombre);
 		tipos.add(t);
 	}
-	public void modificarTipo(String nombre) {
+	public void modificarTipo(String nombreOriginal, String nombreNuevo) {
 		Tipo t= null;
 		for (int i=0; i<tipos.size();i++) {
 			t= tipos.get(i);
-			if (t.getNombre()==nombre)
-				t.setNombre(nombre);
+			if (t.getNombre().equals(nombreOriginal))
+				t.setNombre(nombreNuevo);
 		}
 	}
 	public void borrarTipo(String nombre) {
-		tipos.removeIf(Tipo -> Tipo.getNombre()==nombre);
+	    Tipo tipoGenerico = tipos.get(0);
+	    Tipo tipo = consultarTipo(nombre);
+	    
+	    if (tipo != null && tipo != tipoGenerico) {
+	        for (Item item : items) {
+	            if (item.getTipo() == tipo) {
+	                item.setTipo(tipoGenerico);
+	            }
+	        }
+	        tipos.remove(tipo);
+	    }
 	}
 	public Tipo consultarTipo(String nombre) {
 		Tipo t= null;
 		for (int i=0; i<tipos.size(); i++) {
 			t=tipos.get(i);
-			if (t.getNombre()==nombre) {
+			if (t.getNombre().equals(nombre)) {
 				return t;
 			}
 		}
 		return t;
 	}
 
-	public List<Prestamo> getPrestamos() {
+	public Map<Integer, Prestamo> getPrestamos() {
 		return prestamos;
 	}
 	
 	public void crearPrestamo(Persona persona) {
 		Prestamo p= new Prestamo(persona, conteoPrestamos);
-		prestamos.add(p);
+		prestamos.put(conteoPrestamos, p);
+		try {
+	        persona.agregarPrestamo(p);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 		conteoPrestamos++;
 	}
 	public void agregarItemPrestamo(int ID, Item item) throws Exception {
-		if (ID>conteoPrestamos || ID<0)
-			throw new Exception("Index fuera de rango");
 		Prestamo p= prestamos.get(ID);
+		if (p==null)
+			throw new Exception("Index fuera de rango");
 		p.agregarItem(item);
 	}
+	
 	public void eliminarItemPrestamo(int ID, Item item) throws Exception{
-		if (ID>conteoPrestamos || ID<0)
-			throw new Exception("Index fuera de rango");
 		Prestamo p= prestamos.get(ID);
+		if (p==null)
+			throw new Exception("Index fuera de rango");
 		p.quitarItem(item);
 	}
 	public void retornarItemPrestamo(int ID, Item item) throws Exception{
-		if (ID>conteoPrestamos || ID<0)
-			throw new Exception("Index fuera de rango");
 		Prestamo p= prestamos.get(ID);
+		if (p==null)
+			throw new Exception("Index fuera de rango");
 		p.retornarItem(item);
 	}
 	
 	public void terminarPrestamo(int ID) throws Exception{
-		if (ID>conteoPrestamos || ID<0)
-			throw new Exception("Index fuera de rango");
+		
 		Prestamo p= prestamos.get(ID);
+		if (p==null)
+			throw new Exception("Index fuera de rango");
 		p.retornarItems();
-		prestamos.remove(p);
+		p.getPersona().borrarPrestamo(p);
+		prestamos.remove(ID);
 	}
-	// cambiar logica de prestamo para usar un diccionario
 	
+	public void guardarDatos() {
+	    try (ObjectOutputStream oos = new ObjectOutputStream(
+	            new FileOutputStream("datos.ser"))) {
+	        oos.writeObject(this);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
 	
+	public static Controladora cargarDatos() {
+	    try (ObjectInputStream ois = new ObjectInputStream(
+	            new FileInputStream("datos.ser"))) {
+	        return (Controladora) ois.readObject();
+	    } catch (Exception e) {
+	        return new Controladora();
+	    }
+	}
+	public int getConteoPrestamos() {
+		return conteoPrestamos;
+	}
 	
 }

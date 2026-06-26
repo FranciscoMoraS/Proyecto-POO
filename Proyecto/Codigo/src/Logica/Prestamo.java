@@ -1,10 +1,12 @@
 //falta agregar alerta
 package Logica;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Prestamo {
+public class Prestamo implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private int ID;
 	private Persona persona;
 	private List<Item> items;
@@ -32,6 +34,12 @@ public class Prestamo {
 		return alerta;
 	}
 	
+	
+	public int getID() {
+		return ID;
+	}
+
+
 	public void agregarItem(Item item) {
 		items.add(item);
 		item.setPrestamo(this);
@@ -55,10 +63,14 @@ public class Prestamo {
 		items.remove(indexItem);
 	}
 	public void retornarItems() throws Exception {
-		for (int i=0; i<items.size();i++) {
-			retornarItem(items.get(i));
-		}
-		items.clear();
+	    List<Item> copia = new ArrayList<>(items);
+	    for (Item item : copia) {
+	        retornarItem(item);
+	    }
+	    items.clear();
+	}
+	public boolean tieneAlerta() {
+		return alerta!=null;
 	}
 	
 	
