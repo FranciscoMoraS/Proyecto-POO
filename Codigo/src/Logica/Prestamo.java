@@ -32,6 +32,12 @@ public class Prestamo {
 		return alerta;
 	}
 	
+	
+	public int getID() {
+		return ID;
+	}
+
+
 	public void agregarItem(Item item) {
 		items.add(item);
 		item.setPrestamo(this);

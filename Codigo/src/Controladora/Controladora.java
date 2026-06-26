@@ -38,12 +38,12 @@ public class Controladora {
 		personas.add(p);
 	}
 	
-	public void modificarPersona(String nombre, String telefono, String email) {
+	public void modificarPersona(String nombreOriginal, String nombreNuevo, String telefono, String email) {
 		Persona p;
 		for (int i=0;i<personas.size();i++) {
-			if (personas.get(i).getNombre()==nombre) {
+			if (personas.get(i).getNombre().equals(nombreOriginal)) {
 				p= personas.get(i);
-				p.setNombre(nombre);
+				p.setNombre(nombreNuevo);
 				p.setEmail(email);
 				p.setTelefono(telefono);
 			}
@@ -57,7 +57,7 @@ public class Controladora {
 	public Persona consultarPersona(String nombre) {
 		Persona p=null;
 		for (int i=0; i<personas.size(); i++) {
-			if (personas.get(i).getNombre()==nombre) {
+			if (personas.get(i).getNombre().equals(nombre)) {
 				p=personas.get(i);
 			}
 		}

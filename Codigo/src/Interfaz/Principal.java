@@ -17,6 +17,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import Logica.Item;
+import Logica.Persona;
 import Logica.Tipo;
 import Controladora.Controladora;
 
@@ -235,18 +236,90 @@ public class Principal {
 		JButton agregarPersona = new JButton("Agregar Persona");
 		agregarPersona.setBounds(461, 38, 123, 20);
 		personas.add(agregarPersona);
+		agregarPersona.addActionListener(e -> {
+		    dialogCrearPersona dialog = new dialogCrearPersona(frame);
+		    dialog.setVisible(true);
+
+		    if (dialog.isConfirmado()) {
+		        controladora.crearPersona(dialog.getNombre(), dialog.getTelefono(), dialog.getEmail());
+		        actualizarTablaPersonas();
+		    }
+		});
 		
 		JButton modificarPersona = new JButton("Modificar persona");
 		modificarPersona.setBounds(461, 95, 123, 20);
 		personas.add(modificarPersona);
+		modificarPersona.addActionListener(e -> {
+		    int filaSeleccionada = tablaPersonas.getSelectedRow();
+
+		    if (filaSeleccionada == -1) {
+		        JOptionPane.showMessageDialog(frame, "Seleccione una persona primero");
+		        return;
+		    }
+
+		    String nombre = (String) tablaPersonas.getValueAt(filaSeleccionada, 0);
+		    Persona persona = controladora.consultarPersona(nombre);
+
+		    dialogModificarPersona dialog = new dialogModificarPersona(frame, persona);
+		    dialog.setVisible(true);
+
+		    if (dialog.isConfirmado()) {
+		        controladora.modificarPersona(nombre, dialog.getNombre(), dialog.getTelefono(), dialog.getEmail());
+		        actualizarTablaPersonas();
+		    }
+		    
+		});
 		
 		JButton borrarPersona = new JButton("Borrar Persona");
 		borrarPersona.setBounds(461, 163, 123, 20);
 		personas.add(borrarPersona);
+		borrarPersona.addActionListener(e -> {
+		    int filaSeleccionada = tablaPersonas.getSelectedRow();
+		    
+		    if (filaSeleccionada == -1) {
+		        JOptionPane.showMessageDialog(frame, "Seleccione una Persona primero");
+		        return;
+		    }
+		    
+		    String nombre = (String) tablaPersonas.getValueAt(filaSeleccionada, 0);
+		    Persona persona = controladora.consultarPersona(nombre);
+		    
+		    if (persona.tienePrestamos()) {
+		        JOptionPane.showMessageDialog(frame, "No se puede borrar una Persona con prestamos");
+		        return;
+		    }
+		    
+		    int respuesta = JOptionPane.showConfirmDialog(
+		        frame,
+		        "¿Está seguro que desea borrar la Persona: " + persona.getNombre() + "?",
+		        "Confirmar borrado",
+		        JOptionPane.YES_NO_OPTION
+		    );
+		    
+		    if (respuesta == JOptionPane.YES_OPTION) {
+		        controladora.borrarPersona(nombre);
+		        actualizarTablaPersonas();
+		    }
+		});
 		
 		JButton consultarPersona = new JButton("Consultar Persona");
 		consultarPersona.setBounds(461, 241, 123, 20);
 		personas.add(consultarPersona);
+		consultarPersona.addActionListener(e -> {
+		    int filaSeleccionada = tablaPersonas.getSelectedRow();
+
+		    if (filaSeleccionada == -1) {
+		        JOptionPane.showMessageDialog(frame, "Seleccione una persona primero");
+		        return;
+		    }
+
+		    String nombre = (String) tablaPersonas.getValueAt(filaSeleccionada, 0);
+		    Persona persona = controladora.consultarPersona(nombre);
+
+		    dialogConsultarPersona dialog = new dialogConsultarPersona(frame, persona);
+		    dialog.setVisible(true);
+		});
+		
 		JPanel categorias = new JPanel();
 		contenidoAdministracion.add(categorias, "ventanaCategorias");
 		JPanel tipos = new JPanel();
@@ -287,6 +360,18 @@ public class Principal {
 	        modelo.addRow(new Object[] {
 	            item.getCodigo(),
 	            item.getNombre()
+	        });
+	    }
+	}
+	private void actualizarTablaPersonas() {
+	    DefaultTableModel modelo = (DefaultTableModel) tablaPersonas.getModel();
+	    modelo.setRowCount(0);
+
+	    for (Persona persona : controladora.getPersonas()) {
+	        modelo.addRow(new Object[] {
+	            persona.getNombre(),
+	            persona.getTelefono(),
+	            persona.getEmail()
 	        });
 	    }
 	}

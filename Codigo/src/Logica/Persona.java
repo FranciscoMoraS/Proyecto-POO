@@ -1,4 +1,4 @@
-//listo 
+
 package Logica;
 
 import java.util.ArrayList;
@@ -55,6 +55,9 @@ public class Persona {
 			throw new Exception("El prestamo ya está en la lista");
 		}
 		prestamos.add(prestamo);
+	}
+	public boolean tienePrestamos() {
+		return prestamos.size()>0;
 	}
 
 }
