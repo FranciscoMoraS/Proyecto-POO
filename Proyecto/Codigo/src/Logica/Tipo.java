@@ -29,4 +29,8 @@ public class Tipo {
 	public void quitarItem(Item quitar) {
 		lista.remove(quitar);
 	}
+	
+	public String toString() {
+		return Nombre;
+	}
 }

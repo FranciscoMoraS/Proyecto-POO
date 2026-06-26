@@ -1,5 +1,6 @@
 package Controladora;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import Logica.Categoria;
@@ -14,9 +15,19 @@ public class Controladora {
 	private List<Item> items;
 	private List<Tipo> tipos;
 	private List<Categoria> categorias;
-	private int conteoPrestamos=0;
+	private int conteoPrestamos;
+	private int consecutivoItems=0;
 	
-	
+	public Controladora() {
+		personas = new ArrayList<Persona>();
+		prestamos = new ArrayList<Prestamo>();
+		items = new ArrayList<Item>();
+		tipos = new ArrayList<Tipo>();
+		categorias= new ArrayList<Categoria>();
+		conteoPrestamos=0;
+		consecutivoItems=0;
+		tipos.add(new Tipo("inicial"));
+	}
 	public List<Persona> getPersonas() {
 		return personas;
 	}
@@ -57,9 +68,10 @@ public class Controladora {
 		return items;
 	}
 	
-	public void crearItem(String nombre, int Codigo, String descripcion, Tipo tipo) {
-		Item item = new Item(nombre, Codigo, descripcion, tipo);
+	public void crearItem(String nombre, String descripcion, Tipo tipo) {
+		Item item = new Item(nombre, consecutivoItems, descripcion, tipo);
 		items.add(item);
+		consecutivoItems++;
 	}
 	
 	public void modificarItem(String nombre, int codigo,  String descripcion, Tipo tipo) {
@@ -73,7 +85,17 @@ public class Controladora {
 			}
 		}
 	}
-	//agregar un metodo privado para cambiar categorias.
+	public void modificarCategoriasItem(int codigo, List<Categoria> categoriasNuevas) {
+	    Item item = consultarItem(codigo);
+	    if (item != null) {
+	        List<Categoria> categorias= item.getCategorias();
+	        categorias.clear();
+	        
+	        for (Categoria c : categoriasNuevas) {
+	            item.agregarCategoria(c);
+	        }
+	    }
+	}
 	public void borrarItem(int codigo) {
 		items.removeIf(Item -> Item.getCodigo()==codigo);
 	}

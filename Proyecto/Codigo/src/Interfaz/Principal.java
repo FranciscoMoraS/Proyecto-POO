@@ -3,18 +3,28 @@ package Interfaz;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.CardLayout;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+import Logica.Item;
+import Logica.Tipo;
+import Controladora.Controladora;
 
 public class Principal {
 
 	private JFrame frame;
+	private JTable tablaItems;
+	private Controladora controladora;
 
 	/**
 	 * Launch the application.
@@ -43,6 +53,8 @@ public class Principal {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		controladora= new Controladora();
+		//controladora.crearTipo("Inicial");
 		frame = new JFrame();
 		frame.setBounds(100, 100, 678, 442);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -71,21 +83,80 @@ public class Principal {
 		scrollPane.setBounds(0, 0, 392, 316);
 		items.add(scrollPane);
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setBounds(476, 46, 84, 20);
-		items.add(btnNewButton);
+		tablaItems = new JTable();
+		tablaItems.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"codigo", "Nombre"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				Integer.class, String.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+			boolean[] columnEditables = new boolean[] {
+				true, false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		tablaItems.getColumnModel().getColumn(0).setPreferredWidth(74);
+		scrollPane.setViewportView(tablaItems);
 		
-		JButton btnNewButton_1 = new JButton("New button");
-		btnNewButton_1.setBounds(476, 105, 84, 20);
-		items.add(btnNewButton_1);
+		JButton crearItem = new JButton("Crear Item");
+		crearItem.setBounds(461, 46, 122, 20);
+		items.add(crearItem);
+		crearItem.addActionListener(e -> {
+		    List tipos = controladora.getTipos(); // obtienes la lista del controlador
+		    dialogCrearItem dialog = new dialogCrearItem(frame, tipos);
+		    dialog.setVisible(true);
+
+		    if (dialog.isConfirmado()) {
+		        String nombre = dialog.getNombre();
+		        String descripcion = dialog.getDescripcion();
+		        Tipo tipo = (Tipo) dialog.getTipoSeleccionado();
+		        
+		        controladora.crearItem(nombre, descripcion, tipo);
+		        actualizarTablaItems();
+		    }
+		});
 		
-		JButton btnNewButton_2 = new JButton("New button");
-		btnNewButton_2.setBounds(476, 174, 84, 20);
-		items.add(btnNewButton_2);
 		
-		JButton btnNewButton_3 = new JButton("New button");
-		btnNewButton_3.setBounds(476, 239, 84, 20);
-		items.add(btnNewButton_3);
+		JButton modificarItem = new JButton("Modificar Item");
+		modificarItem.setBounds(461, 105, 122, 20);
+		items.add(modificarItem);
+		modificarItem.addActionListener(e -> {
+		    int filaSeleccionada = tablaItems.getSelectedRow();
+		    
+		    if (filaSeleccionada == -1) {
+		        JOptionPane.showMessageDialog(frame, "Seleccione un item primero");
+		        return;
+		    }
+		    
+		    int codigo = (int) tablaItems.getValueAt(filaSeleccionada, 0);
+		    Item item = controladora.consultarItem(codigo);
+		    
+		    dialogModificarItem dialog = new dialogModificarItem(frame, item, controladora.getTipos(), controladora.getCategorias());
+		    dialog.setVisible(true);
+		    
+		    if (dialog.isConfirmado()) {
+		        controladora.modificarItem(dialog.getNombre(), item.getCodigo(), dialog.getDescripcion(), dialog.getTipoSeleccionado());
+		        controladora.modificarCategoriasItem(item.getCodigo(), dialog.getCategoriasSeleccionadas(controladora.getCategorias()));
+		        actualizarTablaItems();
+		    }
+		});
+		
+		JButton borrarItem = new JButton("Borrar Item");
+		borrarItem.setBounds(461, 171, 122, 20);
+		items.add(borrarItem);
+		
+		JButton consultarItem = new JButton("Consultar Item");
+		consultarItem.setBounds(461, 239, 122, 20);
+		items.add(consultarItem);
 		JPanel personas = new JPanel();
 		contenidoAdministracion.add(personas, "ventanaPersonas");
 		JPanel categorias = new JPanel();
@@ -119,5 +190,16 @@ public class Principal {
 		JPanel ventanaReportes = new JPanel();
 		tabbedPane.addTab("Reportes", null, ventanaReportes, null);
 		ventanaReportes.setLayout(null);
+	}
+	private void actualizarTablaItems() {
+	    DefaultTableModel modelo = (DefaultTableModel) tablaItems.getModel();
+	    modelo.setRowCount(0);
+	    
+	    for (Item item : controladora.getItems()) {
+	        modelo.addRow(new Object[] {
+	            item.getCodigo(),
+	            item.getNombre()
+	        });
+	    }
 	}
 }

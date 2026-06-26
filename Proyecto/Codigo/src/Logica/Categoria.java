@@ -30,4 +30,14 @@ public class Categoria {
 	public void quitarItem(Item quitar) {
 		Items.remove(quitar);
 	}
+	public String toString() {
+		return Nombre;
+	}
+	public boolean equals(Object obj) {
+	    if (this == obj) return true;
+	    if (obj == null) return false;
+	    if (getClass() != obj.getClass()) return false;
+	    Categoria other = (Categoria) obj;
+	    return Nombre.equals(other.Nombre);
+	}
 }
